@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>甜宝爱心 · 戒烟助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* 去掉手机点击灰色背景 */
+        }
+
+        body {
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            padding: 12px;
+        }
+
+        .widget {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(20, 30, 40, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 20px 18px 26px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFB7C5, #FF6F91);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .day-badge {
+            background: #00000066;
+            border-radius: 60px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ffb7c5;
+        }
+
+        .goal-switch {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 16px 0 12px;
+        }
+        .goal-btn {
+            background: #1e2e38;
+            border: none;
+            padding: 10px 0;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #cce3ed;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.1s;
+        }
+        .goal-btn.active {
+            background: #ff6f91;
+            color: white;
+            box-shadow: 0 0 10px #ff6f91aa;
+        }
+        .goal-btn:active {
+            transform: scale(0.96);
+        }
+
+        .heart-container {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0 10px;
+            animation: heartbeat 1.2s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            35% { transform: scale(1.1); }
+            45% { transform: scale(1.05); }
+            55% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        canvas {
+            width: 150px;
+            height: 135px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .heart-percent {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffb7c5;
+            background: #1e2a2faa;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 60px;
+            margin: 8px auto 12px;
+        }
+
+        .target-show {
+            font-size: 0.85rem;
+            background: #00000055;
+            border-radius: 40px;
+            padding: 6px 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #ffecb3;
+        }
+
+        .stats {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0 16px;
+        }
+        .stat {
+            flex: 1;
+            background: #0e191faa;
+            border-radius: 28px;
+            padding: 12px 6px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #f3b35c;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9ab7c6;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .tip {
+            background: #0f1a1fcc;
+            border-radius: 28px;
+            padding: 12px 14px;
+            font-size: 0.8rem;
+            color: #cce3ed;
+            border-left: 4px solid #ff6f91;
+            margin-top: 14px;
+            text-align: left;
+        }
+
+        .blessing-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            border-radius: 60px;
+            padding: 10px 16px;
+            margin-top: 18px;
+            gap: 10px;
+        }
+        .blessing-text {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #b13e5c;
+            text-align: center;
+            flex: 1;
+            line-height: 1.3;
+        }
+        .refresh-blessing {
+            background: rgba(255,255,240,0.8);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.1s;
+            color: #b13e5c;
+            flex-shrink: 0;
+        }
+        .refresh-blessing:active {
+            transform: rotate(30deg);
+        }
+
+        .timer-box {
+            background: #0e191faa;
+            border-radius: 28px;
+            padding: 14px 10px;
+            margin: 14px 0;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 0.75rem;
+            color: #9ab7c6;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .timer-display {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .timer-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 42px;
+        }
+        .timer-number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ff6f91;
+            background: #1e2a38;
+            border-radius: 10px;
+            padding: 4px 8px;
+            min-width: 42px;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-unit-label {
+            font-size: 0.6rem;
+            color: #9ab7c6;
+            margin-top: 4px;
+        }
+        .timer-sep {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ff6f91;
+            align-self: flex-start;
+            padding-top: 4px;
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 20px;
+            color: #8aaebb;
+        }
+    </style>
+</head>
+<body>
+<div class="widget">
+    <div class="widget-header">
+        <span class="title">❤️ 想哥的戒烟爱心</span>
+        <span class="day-badge" id="dayCount">第0天</span>
+    </div>
+
+    <div class="goal-switch">
+        <button class="goal-btn" data-goal="30">🎯 30天</button>
+        <button class="goal-btn" data-goal="90">🏆 90天</button>
+        <button class="goal-btn" data-goal="permanent">🌟 永久</button>
+    </div>
+    <div class="target-show" id="targetDesc">当前目标: 30天</div>
+
+    <div class="heart-container">
+        <canvas id="heartCanvas" width="200" height="180" style="width:150px; height:135px;"></canvas>
+    </div>
+    <div class="heart-percent" id="heartPercentText">0%</div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-number" id="avoidedCigs">0</div>
+            <div class="stat-label">🚬 避免吸烟(支)</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number" id="savedMoney">0</div>
+            <div class="stat-label">💰 节省(元)</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number" id="progressPercent">0%</div>
+            <div class="stat-label">完成度</div>
+        </div>
+    </div>
+
+    <div class="timer-box">
+        <div class="timer-label">⏱️ 精确计时</div>
+        <div class="timer-display">
+            <div class="timer-unit">
+                <div class="timer-number" id="timerDays">00</div>
+                <div class="timer-unit-label">天</div>
+            </div>
+            <div class="timer-sep">:</div>
+            <div class="timer-unit">
+                <div class="timer-number" id="timerHours">00</div>
+                <div class="timer-unit-label">时</div>
+            </div>
+            <div class="timer-sep">:</div>
+            <div class="timer-unit">
+                <div class="timer-number" id="timerMins">00</div>
+                <div class="timer-unit-label">分</div>
+            </div>
+            <div class="timer-sep">:</div>
+            <div class="timer-unit">
+                <div class="timer-number" id="timerSecs">00</div>
+                <div class="timer-unit-label">秒</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tip" id="healthTip">
+        💪 想哥加油！第4天：尼古丁基本清除，爱心正在跳动～
+    </div>
+
+    <div class="blessing-box">
+        <div class="blessing-text" id="blessingText">❤️ 祝想哥戒烟成功！每一天都是胜利 ❤️</div>
+        <button class="refresh-blessing" id="refreshBlessingBtn">🔄</button>
+    </div>
+
+    <footer>
+        ❤️ 心跳爱心 · 专属想哥 | 戒烟始于 2026-05-23 | 每天20支烟 | 一包16元(20支)
+    </footer>
+</div>
+
+<script>
+    // ========= 想哥的戒烟数据（请按实际情况修改） ==========
+    const QUIT_DATE = new Date(2026, 4, 23);   // 想哥开始戒烟日期：2026年5月23日（月份减1）
+    const CIGS_PER_DAY = 20;                    // 想哥之前每天4支
+    const PRICE_PER_PACK = 16;                 // 每包25元
+    const CIGS_PER_PACK = 20;                  // 每包20支
+    const PERMANENT_DAYS = 3650;               // 永久目标（10年）
+
+    // 祝福语库（可随意增删）
+    const BLESSINGS = [
+        "❤️ 祝想哥戒烟成功！每一天都是胜利 ❤️",
+        "💪 想哥最棒！一天比一天更健康！",
+        "🌟 每一颗爱心，都是我对你的鼓励！",
+        "🍀 戒烟不易，但你并不孤单，加油！",
+        "🎉 30天，90天，永久……我陪你一起见证！",
+        "💖 少抽一支烟，多一份我们的未来。",
+        "🏆 想哥是真正的勇士，战胜烟瘾！",
+        "🌿 清新的空气，健康的心肺，值得拥有。",
+        "📈 看着爱心一天天填满，超有成就感！",
+        "✨ 你的坚持，让我骄傲。",
+        "🔥 戒断反应不可怕，你会越来越轻松。",
+        "💞 想哥，我永远支持你！"
+    ];
+
+    let currentGoalDays = 30;
+
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 200;
+    canvas.height = 180;
+
+    function drawHeart(fillPercent) {
+        fillPercent = Math.min(1, Math.max(0, fillPercent));
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.beginPath();
+        const x = canvas.width / 2;
+        const y = canvas.height / 2 + 5;
+        const size = 70;
+        
+        ctx.moveTo(x, y + size * 0.35);
+        ctx.bezierCurveTo(
+            x - size * 0.55, y + size * 0.1,
+            x - size * 0.8, y - size * 0.3,
+            x, y - size * 0.6
+        );
+        ctx.bezierCurveTo(
+            x + size * 0.8, y - size * 0.3,
+            x + size * 0.55, y + size * 0.1,
+            x, y + size * 0.35
+        );
+        ctx.closePath();
+        
+        ctx.save();
+        ctx.clip();
+        
+        ctx.fillStyle = "#ffccd5";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const heartTopY = y - size * 0.6;
+        const heartBottomY = y + size * 0.35;
+        const heartHeight = heartBottomY - heartTopY;
+        const fillHeight = heartHeight * fillPercent;
+        const fillRectY = heartBottomY - fillHeight;
+        
+        ctx.fillStyle = "#e63946";
+        ctx.fillRect(0, fillRectY, canvas.width, heartBottomY);
+        
+        ctx.restore();
+        
+        ctx.beginPath();
+        ctx.moveTo(x, y + size * 0.35);
+        ctx.bezierCurveTo(
+            x - size * 0.55, y + size * 0.1,
+            x - size * 0.8, y - size * 0.3,
+            x, y - size * 0.6
+        );
+        ctx.bezierCurveTo(
+            x + size * 0.8, y - size * 0.3,
+            x + size * 0.55, y + size * 0.1,
+            x, y + size * 0.35
+        );
+        ctx.strokeStyle = "#ffecb3";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.arc(x - 12, y - 20, 6, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff80";
+        ctx.fill();
+    }
+
+    function getDaysQuit() {
+        const today = new Date();
+        const start = new Date(QUIT_DATE.getFullYear(), QUIT_DATE.getMonth(), QUIT_DATE.getDate());
+        const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+        return diff >= 0 ? diff : 0;
+    }
+
+    function getGoalDescription() {
+        if (currentGoalDays === PERMANENT_DAYS) return "🌟 永久戒烟 (10年)";
+        else if (currentGoalDays === 90) return "🏆 长期目标 · 90天";
+        else return "🎯 短期目标 · 30天";
+    }
+
+    function showRandomBlessing() {
+        const randomIndex = Math.floor(Math.random() * BLESSINGS.length);
+        document.getElementById('blessingText').innerHTML = BLESSINGS[randomIndex];
+    }
+
+    function updateTimer() {
+        const now = new Date();
+        const quitTime = new Date(QUIT_DATE);
+        const diff = now - quitTime;
+        
+        if (diff < 0) {
+            document.getElementById('timerDays').innerText = '00';
+            document.getElementById('timerHours').innerText = '00';
+            document.getElementById('timerMins').innerText = '00';
+            document.getElementById('timerSecs').innerText = '00';
+            return;
+        }
+        
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
+        
+        document.getElementById('timerDays').innerText = String(days).padStart(2, '0');
+        document.getElementById('timerHours').innerText = String(hours).padStart(2, '0');
+        document.getElementById('timerMins').innerText = String(mins).padStart(2, '0');
+        document.getElementById('timerSecs').innerText = String(secs).padStart(2, '0');
+    }
+
+    function refreshWidget() {
+        const days = getDaysQuit();
+        document.getElementById('dayCount').innerText = `第${days}天`;
+        
+        let percent = (days / currentGoalDays) * 100;
+        if (currentGoalDays === PERMANENT_DAYS && days >= PERMANENT_DAYS) percent = 100;
+        percent = Math.min(100, Math.max(0, percent));
+        const percentInt = Math.floor(percent);
+        
+        document.getElementById('progressPercent').innerText = percentInt + '%';
+        document.getElementById('heartPercentText').innerText = percentInt + '%';
+        document.getElementById('targetDesc').innerHTML = `当前目标: ${getGoalDescription()}`;
+        
+        drawHeart(percent / 100);
+        
+        const avoided = days * CIGS_PER_DAY;
+        const saved = (avoided / CIGS_PER_PACK) * PRICE_PER_PACK;
+        document.getElementById('avoidedCigs').innerText = avoided;
+        document.getElementById('savedMoney').innerText = saved.toFixed(1);
+        
+        const tipDiv = document.getElementById('healthTip');
+        let tipMsg = "";
+        if (days >= 90) {
+            tipMsg = `🎉 想哥太棒了！已戒烟 ${days} 天，成功达成90天长期目标！正向永久迈进！爱心已几乎满溢。`;
+        } else if (days >= 30) {
+            tipMsg = `🎉 恭喜想哥完成30天短期目标！当前第${days}天，继续向90天进发！心跳为你加油。`;
+        } else if (days >= 4) {
+            tipMsg = `❤️ 想哥加油！第${days}天：尼古丁代谢干净，爱心填充 ${percentInt}% ，坚持到30天就是第一个胜利！`;
+        } else if (days === 3) {
+            tipMsg = `💪 想哥第3天：呼吸变顺畅，爱心进度 ${percentInt}% ，最难时刻即将过去。`;
+        } else if (days === 2) {
+            tipMsg = `👃 想哥第2天：味觉嗅觉改善。爱心填充 ${percentInt}% ，继续加油！`;
+        } else if (days === 1) {
+            tipMsg = `❤️ 想哥第1天：一氧化碳恢复正常。爱心开始被填满～`;
+        } else {
+            tipMsg = `🔥 想哥，戒烟第 ${days} 天，每一天都是胜利，爱心正在心跳。设定30天目标，很快就能达成！`;
+        }
+        
+        if (percent >= 100 && currentGoalDays !== PERMANENT_DAYS) {
+            tipMsg += `<br>✅ 恭喜想哥完成当前目标！可以点击上方按钮挑战更高目标（90天或永久）。`;
+        } else if (currentGoalDays === PERMANENT_DAYS && days >= PERMANENT_DAYS) {
+            tipMsg += `<br>🏆 想哥已经坚持戒烟10年！永久戒烟成功，你是真正的英雄！`;
+        }
+        tipDiv.innerHTML = tipMsg;
+    }
+
+    function setGoal(goalType) {
+        if (goalType === '30') currentGoalDays = 30;
+        else if (goalType === '90') currentGoalDays = 90;
+        else if (goalType === 'permanent') currentGoalDays = PERMANENT_DAYS;
+        
+        document.querySelectorAll('.goal-btn').forEach(btn => {
+            if (btn.getAttribute('data-goal') === goalType) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        refreshWidget();
+    }
+    
+    document.querySelectorAll('.goal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const goal = btn.getAttribute('data-goal');
+            setGoal(goal);
+        });
+    });
+
+    document.getElementById('refreshBlessingBtn').addEventListener('click', () => {
+        showRandomBlessing();
+    });
+    
+    setGoal('30');
+    showRandomBlessing();
+    updateTimer();
+    setInterval(updateTimer, 1000);
+    setInterval(() => {
+        refreshWidget();
+        showRandomBlessing();
+    }, 3600000);
+</script>
+</body>
+</html>
