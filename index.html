@@ -166,41 +166,80 @@
             text-align: left;
         }
 
-        .blessing-box {
+        .withdrawal-box {
+            background: linear-gradient(135deg, rgba(255, 111, 145, 0.1), rgba(255, 183, 197, 0.05));
+            border-radius: 28px;
+            padding: 16px;
+            margin-top: 14px;
+            border: 1px solid rgba(255, 111, 145, 0.3);
+            text-align: center;
+        }
+        .withdrawal-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .withdrawal-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ff6f91, #ffb7c5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 111, 145, 0.3);
+        }
+        .withdrawal-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffb7c5;
+        }
+        .withdrawal-current-stage {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px 14px;
+        }
+        .withdrawal-stage-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #f3b35c;
+            margin-bottom: 8px;
+        }
+        .withdrawal-stage-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffb7c5;
+            margin-bottom: 10px;
+        }
+        .withdrawal-stage-desc {
+            font-size: 0.85rem;
+            color: #cce3ed;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .blessing-box {
             background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             border-radius: 60px;
             padding: 10px 16px;
             margin-top: 18px;
-            gap: 10px;
+            overflow: hidden;
         }
         .blessing-text {
             font-size: 0.9rem;
             font-weight: bold;
             color: #b13e5c;
             text-align: center;
-            flex: 1;
             line-height: 1.3;
+            transition: opacity 0.5s ease;
         }
-        .refresh-blessing {
-            background: rgba(255,255,240,0.8);
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.1s;
-            color: #b13e5c;
-            flex-shrink: 0;
+        .blessing-text.fade-out {
+            opacity: 0;
         }
-        .refresh-blessing:active {
-            transform: rotate(30deg);
+        .blessing-text.fade-in {
+            opacity: 1;
         }
 
         .timer-box {
@@ -322,23 +361,48 @@
         💪 想哥加油！第4天：尼古丁基本清除，爱心正在跳动～
     </div>
 
+    <div class="withdrawal-box" id="withdrawalBox">
+        <div class="withdrawal-header">
+            <div class="withdrawal-icon">🧬</div>
+            <div class="withdrawal-title">当前身体状态</div>
+        </div>
+        <div class="withdrawal-current-stage" id="currentStage">
+            <!-- 当前阶段信息 -->
+        </div>
+    </div>
+
     <div class="blessing-box">
         <div class="blessing-text" id="blessingText">❤️ 祝想哥戒烟成功！每一天都是胜利 ❤️</div>
-        <button class="refresh-blessing" id="refreshBlessingBtn">🔄</button>
     </div>
 
     <footer>
-        ❤️ 心跳爱心 · 专属想哥 | 戒烟始于 2026-05-23 | 每天20支烟 | 一包16元(20支)
+        ❤️ 心跳爱心 · 专属想哥 | 戒烟始于 2026-05-29 | 每天20支烟 | 一包16元(20支)
     </footer>
 </div>
 
 <script>
     // ========= 想哥的戒烟数据（请按实际情况修改） ==========
-    const QUIT_DATE = new Date(2026, 4, 23);   // 想哥开始戒烟日期：2026年5月23日（月份减1）
+    const QUIT_DATE = new Date(2026, 4, 29);   // 想哥开始戒烟日期：2026年5月29日（月份减1）
     const CIGS_PER_DAY = 20;                    // 想哥之前每天4支
     const PRICE_PER_PACK = 16;                 // 每包25元
     const CIGS_PER_PACK = 20;                  // 每包20支
     const PERMANENT_DAYS = 3650;               // 永久目标（10年）
+
+    // 戒断期阶段说明（详细版）
+    const WITHDRAWAL_STAGES = [
+        { hours: 12, label: '戒烟12小时', title: '身体开始自我修复', desc: '血液中尼古丁含量降至吸烟前的一半，身体开始启动排毒程序。心率和血压开始下降，身体正在努力清除有害物质。' },
+        { hours: 24, label: '戒烟24小时', title: '戒断反应高峰期', desc: '身体内的尼古丁基本清除完毕，戒断反应可能达到顶峰。可能出现烦躁、焦虑、易怒、渴望吸烟等症状。这是最艰难的时刻，请坚持住！' },
+        { hours: 48, label: '戒烟48小时', desc: '嗅觉味觉恢复', title: '嗅觉和味觉开始逐渐恢复灵敏度，能够闻到以前无法察觉的气味，品尝食物更加美味。血液循环开始改善。' },
+        { hours: 72, label: '戒烟72小时', title: '身体彻底排毒', desc: '身体内的尼古丁已完全排出。戒断症状开始减轻，精力和体力开始恢复。肺部纤毛开始恢复功能，帮助清除肺部粘液。' },
+        { days: 1, label: '第1天', title: '一氧化碳水平正常', desc: '血液中的一氧化碳水平恢复正常，身体获得更多氧气。心脏负担减轻，呼吸变得更加顺畅。' },
+        { days: 2, label: '第2天', title: '感官明显改善', desc: '嗅觉和味觉显著改善，能够享受食物的真实味道。呼吸更清新，咳嗽减少。身体正在快速恢复中。' },
+        { days: 3, label: '第3天', title: '能量大幅提升', desc: '身体不再消耗大量能量来代谢尼古丁，精力明显增加。肺功能开始改善，运动耐力提升。' },
+        { days: 7, label: '第1周', title: '一周胜利！', desc: '恭喜完成第一周！肺功能改善约30%，咳嗽和气短减少。心脏病发作风险开始降低。身体已经适应无烟状态。' },
+        { days: 14, label: '第2周', title: '精力充沛', desc: '血液循环显著改善，皮肤开始变得红润有光泽。肺功能持续提升，运动时呼吸更轻松。' },
+        { days: 30, label: '第1个月', title: '一个月里程碑！', desc: '肺功能大幅改善，心脏病风险比吸烟时降低50%。咳嗽、咳痰减少，肺活量增加。身体已经完全适应无烟生活。' },
+        { days: 90, label: '第3个月', title: '长期胜利！', desc: '肺功能恢复约50%-80%，患肺癌风险开始下降。呼吸系统感染减少，整体健康状况明显改善。' },
+        { days: 365, label: '第1年', title: '一年成就！', desc: '心脏病发作风险降低至吸烟者的一半以下，肺癌风险显著降低。肺功能持续改善，预期寿命延长。恭喜你获得新生！' }
+    ];
 
     // 祝福语库（可随意增删）
     const BLESSINGS = [
@@ -357,6 +421,7 @@
     ];
 
     let currentGoalDays = 30;
+    let userSelectedGoal = false;  // 标记用户是否手动选择了目标
 
     const canvas = document.getElementById('heartCanvas');
     const ctx = canvas.getContext('2d');
@@ -432,15 +497,61 @@
         return diff >= 0 ? diff : 0;
     }
 
+    function getHoursQuit() {
+        const now = new Date();
+        const quitTime = new Date(QUIT_DATE);
+        const diff = now - quitTime;
+        if (diff < 0) return 0;
+        return Math.floor(diff / (1000 * 60 * 60));
+    }
+
+    function updateWithdrawalStages() {
+        const hoursQuit = getHoursQuit();
+        const container = document.getElementById('currentStage');
+
+        let currentStage = WITHDRAWAL_STAGES[0];
+        for (let i = 0; i < WITHDRAWAL_STAGES.length; i++) {
+            const stageHours = WITHDRAWAL_STAGES[i].hours || (WITHDRAWAL_STAGES[i].days * 24);
+            const nextStageHours = (i < WITHDRAWAL_STAGES.length - 1) 
+                ? (WITHDRAWAL_STAGES[i + 1].hours || WITHDRAWAL_STAGES[i + 1].days * 24)
+                : Infinity;
+            
+            if (hoursQuit >= stageHours && hoursQuit < nextStageHours) {
+                currentStage = WITHDRAWAL_STAGES[i];
+                break;
+            }
+            
+            if (i === WITHDRAWAL_STAGES.length - 1 && hoursQuit >= stageHours) {
+                currentStage = WITHDRAWAL_STAGES[i];
+                break;
+            }
+        }
+
+        container.innerHTML = `
+            <div class="withdrawal-stage-label">📅 ${currentStage.label}</div>
+            <div class="withdrawal-stage-title">${currentStage.title}</div>
+            <div class="withdrawal-stage-desc">${currentStage.desc}</div>
+        `;
+    }
+
     function getGoalDescription() {
         if (currentGoalDays === PERMANENT_DAYS) return "🌟 永久戒烟 (10年)";
         else if (currentGoalDays === 90) return "🏆 长期目标 · 90天";
         else return "🎯 短期目标 · 30天";
     }
 
-    function showRandomBlessing() {
-        const randomIndex = Math.floor(Math.random() * BLESSINGS.length);
-        document.getElementById('blessingText').innerHTML = BLESSINGS[randomIndex];
+    let blessingIndex = 0;
+
+    function showNextBlessing() {
+        const el = document.getElementById('blessingText');
+        el.classList.add('fade-out');
+        el.classList.remove('fade-in');
+        setTimeout(() => {
+            blessingIndex = (blessingIndex + 1) % BLESSINGS.length;
+            el.innerHTML = BLESSINGS[blessingIndex];
+            el.classList.remove('fade-out');
+            el.classList.add('fade-in');
+        }, 500);
     }
 
     function updateTimer() {
@@ -470,9 +581,26 @@
 
     function refreshWidget() {
         const days = getDaysQuit();
+        const hours = getHoursQuit();
+        const daysDecimal = hours / 24;
+        
         document.getElementById('dayCount').innerText = `第${days}天`;
         
-        let percent = (days / currentGoalDays) * 100;
+        if (!userSelectedGoal) {
+            if (days >= 90 && currentGoalDays !== PERMANENT_DAYS) {
+                currentGoalDays = PERMANENT_DAYS;
+                document.querySelectorAll('.goal-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-goal') === 'permanent');
+                });
+            } else if (days >= 30 && days < 90 && currentGoalDays === 30) {
+                currentGoalDays = 90;
+                document.querySelectorAll('.goal-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-goal') === '90');
+                });
+            }
+        }
+        
+        let percent = (daysDecimal / currentGoalDays) * 100;
         if (currentGoalDays === PERMANENT_DAYS && days >= PERMANENT_DAYS) percent = 100;
         percent = Math.min(100, Math.max(0, percent));
         const percentInt = Math.floor(percent);
@@ -483,7 +611,7 @@
         
         drawHeart(percent / 100);
         
-        const avoided = days * CIGS_PER_DAY;
+        const avoided = Math.floor(daysDecimal * CIGS_PER_DAY);
         const saved = (avoided / CIGS_PER_PACK) * PRICE_PER_PACK;
         document.getElementById('avoidedCigs').innerText = avoided;
         document.getElementById('savedMoney').innerText = saved.toFixed(1);
@@ -502,8 +630,10 @@
             tipMsg = `👃 想哥第2天：味觉嗅觉改善。爱心填充 ${percentInt}% ，继续加油！`;
         } else if (days === 1) {
             tipMsg = `❤️ 想哥第1天：一氧化碳恢复正常。爱心开始被填满～`;
+        } else if (hours > 0) {
+            tipMsg = `🔥 想哥，已戒烟 ${hours} 小时！迈出了戒烟的第一步，坚持住！爱心正在慢慢填满 ${percentInt}%`;
         } else {
-            tipMsg = `🔥 想哥，戒烟第 ${days} 天，每一天都是胜利，爱心正在心跳。设定30天目标，很快就能达成！`;
+            tipMsg = `🚀 想哥，戒烟之旅即将开始！设定30天目标，让我们一起见证你的每一步胜利！`;
         }
         
         if (percent >= 100 && currentGoalDays !== PERMANENT_DAYS) {
@@ -526,6 +656,10 @@
                 btn.classList.remove('active');
             }
         });
+        
+        if (goalType !== 'auto') {
+            userSelectedGoal = true;  // 用户手动选择了目标
+        }
         refreshWidget();
     }
     
@@ -536,17 +670,25 @@
         });
     });
 
-    document.getElementById('refreshBlessingBtn').addEventListener('click', () => {
-        showRandomBlessing();
-    });
-    
-    setGoal('30');
-    showRandomBlessing();
+    function selectAppropriateGoal() {
+        const days = getDaysQuit();
+        if (days >= 90) {
+            setGoal('permanent');
+        } else if (days >= 30) {
+            setGoal('90');
+        } else {
+            setGoal('30');
+        }
+    }
+
+    selectAppropriateGoal();
     updateTimer();
+    updateWithdrawalStages();
     setInterval(updateTimer, 1000);
+    setInterval(showNextBlessing, 5000);
     setInterval(() => {
         refreshWidget();
-        showRandomBlessing();
+        updateWithdrawalStages();
     }, 3600000);
 </script>
 </body>
