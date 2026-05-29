@@ -13,37 +13,71 @@
         }
 
         body {
-            background: transparent;
+            background: #1a1a2e;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-            padding: 12px;
+            /* padding: 12px; */
         }
 
         .widget {
             width: 100%;
             max-width: 450px;
             background: rgba(20, 30, 40, 0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 48px;
+            backdrop-filter: blur(20px);
+            
             padding: 20px 18px 26px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+            border: none;
             text-align: center;
+            background-image: url('images/background.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(20, 30, 40, 0.3);
+            
+            pointer-events: none;
+        }
+        .widget > * {
+            position: relative;
+            z-index: 1;
         }
 
         .widget-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 8px;
         }
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #ff6f91;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(255, 111, 145, 0.4);
+        }
         .title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 800;
             background: linear-gradient(135deg, #FFB7C5, #FF6F91);
             -webkit-background-clip: text;
@@ -60,67 +94,35 @@
         }
 
         .goal-switch {
+            position: absolute;
+            left: 10px;
+            top: 110px;
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            justify-content: center;
-            margin: 16px 0 12px;
+            z-index: 20;
         }
         .goal-btn {
-            background: #1e2e38;
+            background: #1e2e3880;
             border: none;
-            padding: 10px 0;
-            border-radius: 60px;
-            font-size: 0.85rem;
+            padding: 7px 12px;
+            border-radius: 30px;
+            font-size: 0.72rem;
             font-weight: bold;
             color: #cce3ed;
             cursor: pointer;
-            flex: 1;
-            transition: 0.1s;
+            transition: 0.15s;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+            z-index: 10;
         }
         .goal-btn.active {
-            background: #ff6f91;
+            background: #ff6f91cc;
             color: white;
-            box-shadow: 0 0 10px #ff6f91aa;
+            box-shadow: 0 2px 8px rgba(255, 111, 145, 0.5);
         }
         .goal-btn:active {
-            transform: scale(0.96);
-        }
-
-        .tab-switch {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 10px 0 14px;
-        }
-        .tab-btn {
-            background: #1e2e38;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #cce3ed;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #ff6f91, #ffb7c5);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 111, 145, 0.4);
-        }
-        .tab-btn:active {
-            transform: scale(0.96);
-        }
-        .tab-content {
-            display: none;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .tab-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
+            transform: scale(0.95);
         }
 
         .heart-container {
@@ -156,16 +158,6 @@
             padding: 6px 18px;
             border-radius: 60px;
             margin: 8px auto 12px;
-        }
-
-        .target-show {
-            font-size: 0.85rem;
-            background: #00000055;
-            border-radius: 40px;
-            padding: 6px 12px;
-            display: inline-block;
-            margin-bottom: 10px;
-            color: #ffecb3;
         }
 
         .stats {
@@ -279,35 +271,6 @@
             opacity: 1;
         }
 
-        .couple-photo-box {
-            background: linear-gradient(135deg, rgba(255, 183, 197, 0.15), rgba(255, 111, 145, 0.1));
-            border-radius: 32px;
-            padding: 16px;
-            margin-top: 18px;
-            border: 2px solid rgba(255, 111, 145, 0.4);
-            text-align: center;
-        }
-        .couple-photo-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #ffb7c5;
-            margin-bottom: 12px;
-        }
-        .couple-photo-img {
-            width: 100%;
-            max-width: 280px;
-            height: auto;
-            border-radius: 24px;
-            box-shadow: 0 8px 24px rgba(255, 111, 145, 0.3);
-            object-fit: cover;
-        }
-        .couple-photo-caption {
-            font-size: 0.8rem;
-            color: #cce3ed;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
         .timer-box {
             background: #0e191faa;
             border-radius: 28px;
@@ -362,12 +325,71 @@
             margin-top: 20px;
             color: #8aaebb;
         }
+
+        @media screen and (max-width: 400px) {
+            body {  }
+            .widget {
+                padding: 16px 14px 22px;
+            }
+            .widget-header {
+                margin-bottom: 12px;
+            }
+            .title { font-size: 1.2rem; }
+            .avatar { width: 38px; height: 38px; }
+            .day-badge { font-size: 0.78rem; padding: 5px 12px; }
+
+            .goal-switch {
+                left: 10px;
+                top: 110px;
+                gap: 10px;
+            }
+            .goal-btn {
+                padding: 5px 9px;
+                font-size: 0.65rem;
+                border-radius: 20px;
+            }
+
+            .heart-container { margin: 6px 0 8px; }
+            canvas { width: 130px !important; height: 117px !important; }
+            .heart-percent { font-size: 1.05rem; padding: 5px 15px; margin: 6px auto 10px; }
+
+            .stats { gap: 8px; margin: 16px 0 12px; }
+            .stat-number { font-size: 1.2rem; }
+            .stat-label { font-size: 0.7rem; }
+
+            .timer-box { padding: 12px; border-radius: 24px; }
+            .timer-display { font-size: 1.4rem; letter-spacing: 2px; }
+            .timer-labels span { font-size: 0.65rem; }
+
+            .tip { font-size: 0.72rem; padding: 10px 12px; border-radius: 20px; margin: 14px 0; }
+            .withdrawal-box { padding: 12px; border-radius: 20px; }
+            .withdrawal-title { font-size: 0.85rem; }
+            .stage-title { font-size: 0.9rem; }
+            .stage-desc { font-size: 0.72rem; line-height: 1.55; }
+            .blessing-box { padding: 12px; border-radius: 20px; margin-top: 16px; }
+            .blessing-text { font-size: 0.78rem; }
+            footer { font-size: 0.62rem; margin-top: 16px; }
+        }
+
+        @supports (padding: env(safe-area-inset-bottom)) {
+            body {
+                padding-left: env(safe-area-inset-left, 12px);
+                padding-right: env(safe-area-inset-right, 12px);
+                padding-bottom: env(safe-area-inset-bottom, 12px);
+            }
+            .widget {
+                padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+            }
+        }
     </style>
 </head>
 <body>
 <div class="widget">
     <div class="widget-header">
-        <span class="title">❤️ 想哥的戒烟爱心</span>
+        <div class="title-section">
+            <img src="images/couple-photo.jpg" alt="合照" class="avatar" onerror="this.style.display='none'">
+            <span class="title">❤️ 想哥的戒烟爱心</span>
+        </div>
         <span class="day-badge" id="dayCount">第0天</span>
     </div>
 
@@ -376,14 +398,7 @@
         <button class="goal-btn" data-goal="90">🏆 90天</button>
         <button class="goal-btn" data-goal="permanent">🌟 永久</button>
     </div>
-    <div class="target-show" id="targetDesc">当前目标: 30天</div>
 
-    <div class="tab-switch">
-        <button class="tab-btn active" data-tab="home">🏠 戒烟数据</button>
-        <button class="tab-btn" data-tab="photo">💕 甜蜜瞬间</button>
-    </div>
-
-    <div id="tabHome" class="tab-content active">
     <div class="heart-container">
         <canvas id="heartCanvas" width="200" height="180" style="width:150px; height:135px;"></canvas>
     </div>
@@ -446,15 +461,6 @@
     <div class="blessing-box">
         <div class="blessing-text" id="blessingText">❤️ 祝想哥戒烟成功！每一天都是胜利 ❤️</div>
     </div>
-    </div>
-
-    <div id="tabPhoto" class="tab-content">
-    <div class="couple-photo-box">
-        <div class="couple-photo-title">💕 我们的甜蜜瞬间 💕</div>
-        <img src="images/couple-photo.jpg" alt="情侣合照" class="couple-photo-img" onerror="this.style.display='none'">
-        <div class="couple-photo-caption">一起变更好，一起更健康 ❤️</div>
-    </div>
-    </div>
 
     <footer>
         ❤️ 心跳爱心 · 专属想哥 | 戒烟始于 2026-05-29 | 每天20支烟 | 一包16元(20支)
@@ -503,18 +509,6 @@
 
     let currentGoalDays = 30;
     let userSelectedGoal = false;  // 标记用户是否手动选择了目标
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const tabId = btn.dataset.tab;
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-        });
-    });
 
     const canvas = document.getElementById('heartCanvas');
     const ctx = canvas.getContext('2d');
@@ -700,7 +694,6 @@
         
         document.getElementById('progressPercent').innerText = percentInt + '%';
         document.getElementById('heartPercentText').innerText = percentInt + '%';
-        document.getElementById('targetDesc').innerHTML = `当前目标: ${getGoalDescription()}`;
         
         drawHeart(percent / 100);
         
